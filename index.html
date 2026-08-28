@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lucky Point</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  color:#111;
+}
+
+.header{
+  background:linear-gradient(135deg,#6c2bd9,#8b3df0);
+  color:white;
+  padding:35px 20px;
+  text-align:center;
+}
+
+.header h1{
+  margin:0;
+  font-size:34px;
+}
+
+.header p{
+  margin:12px 0 0;
+  font-size:20px;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  padding:22px;
+}
+
+.card{
+  background:white;
+  margin-bottom:22px;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 4px 15px #ddd;
+}
+
+.points{
+  text-align:center;
+}
+
+.points p{
+  font-size:20px;
+  margin:5px;
+}
+
+.points h2{
+  margin:12px;
+  color:#6c2bd9;
+  font-size:48px;
+}
+
+.card h3{
+  font-size:24px;
+  margin-top:0;
+}
+
+.info{
+  font-size:18px;
+  margin:18px 0;
+}
+
+.code{
+  color:#6c2bd9;
+  font-size:21px;
+}
+
+button{
+  width:100%;
+  padding:16px;
+  margin-top:10px;
+  border:0;
+  border-radius:12px;
+  background:#6c2bd9;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+.success{
+  text-align:center;
+  color:#16803c;
+  font-size:16px;
+  margin-top:15px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>🍀 Lucky Point</h1>
+  <p>Referral & Rewards</p>
+</div>
+
+<div class="container">
+
+  <div class="card points">
+    <p>मेरे Bonus Points</p>
+    <h2 id="points">0</h2>
+  </div>
+
+  <div class="card">
+
+    <h3>🎁 मेरा Referral</h3>
+
+    <div class="info">
+      Referral Code:
+      <b class="code" id="refCode"></b>
+    </div>
+
+    <div class="info">
+      👥 मेरे Referrals:
+      <b id="referralCount">0</b>
+    </div>
+
+    <button onclick="shareReferral()">
+      📤 Referral Share करें
+    </button>
+
+    <div class="success" id="message">
+      ✅ Referral Link कॉपी हो गया!
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// Points
+let points = localStorage.getItem("luckyPoints") || 0;
+document.getElementById("points").textContent = points;
+
+
+// Referral Code
+let code = localStorage.getItem("luckyPointCode");
+
+if(!code){
+  code = "LP" + Math.floor(100000 + Math.random() * 900000);
+  localStorage.setItem("luckyPointCode",code);
+}
+
+document.getElementById("refCode").textContent = code;
+
+
+// Referral Count
+let referralCount =
+  localStorage.getItem("referralCount") || 0;
+
+document.getElementById("referralCount").textContent =
+  referralCount;
+
+
+// आने वाला Referral Code
+const params = new URLSearchParams(window.location.search);
+const ref = params.get("ref");
+
+if(ref && ref !== code){
+
+  localStorage.setItem("referredBy",ref);
+
+}
+
+
+// Share Referral
+function shareReferral(){
+
+  const referralLink =
+    window.location.href.split("?")[0] +
+    "?ref=" + code;
+
+  if(navigator.share){
+
+    navigator.share({
+      title:"Lucky Point",
+      text:"🍀 Lucky Point में मेरे Referral Link से जुड़ो!",
+      url:referralLink
+    });
+
+  }else{
+
+    navigator.clipboard.writeText(referralLink);
+
+    document.getElementById("message").style.display="block";
+
+    setTimeout(function(){
+
+      document.getElementById("message").style.display="none";
+
+    },3000);
+
+  }
+}
+
+</script>
+
+</body>
+</html>
